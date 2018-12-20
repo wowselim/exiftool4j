@@ -1,5 +1,0 @@
-language: java
-jdk:
-  - oraclejdk11
-install:
-  - ./gradlew --info assemble

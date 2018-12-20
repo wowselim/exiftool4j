@@ -1,4 +1,4 @@
-# exiftool4j [![Build Status](https://travis-ci.org/wowselim/exiftool4j.svg?branch=master)](https://travis-ci.org/wowselim/exiftool4j)
+# exiftool4j
 
 Java wrapper for exiftool. Requires exiftool to be in your path.
 
