@@ -83,6 +83,6 @@ public class ExifExtractorTest {
     }
 
     private static File getFile() {
-        return new File(ExifExtractorTest.class.getResource("birdie.jpg").getFile());
+        return new File(ExifExtractorTest.class.getClassLoader().getResource("birdie.jpg").getFile());
     }
 }
