@@ -11,10 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * A utility that can be used to extract exif data from a {@link File} or a {@link Path}.
@@ -23,7 +20,7 @@ import java.util.Scanner;
 public class ExifExtractor {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExifExtractor.class);
 
-    private static final List<String> EXIFTOOL_COMMANDS = List.of("exiftool", "-json");
+    private static final List<String> EXIFTOOL_COMMANDS = Arrays.asList("exiftool", "-json");
     private final ProcessBuilder processBuilder;
 
     public ExifExtractor() {

@@ -29,7 +29,7 @@ public enum ExifKey {
         return Arrays.stream(values())
                 .filter(exifKey -> exifToolName.equals(exifKey.exifToolName))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalStateException("Exif key not found for name " + exifToolName));
     }
 
     String getExifToolName() {
