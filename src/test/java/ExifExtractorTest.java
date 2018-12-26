@@ -4,8 +4,8 @@ import co.selim.exiftool4j.ExifKey;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Optional;
 
 public class ExifExtractorTest {
@@ -76,13 +76,13 @@ public class ExifExtractorTest {
             Optional<String> value = exifDocument.getExifData(exifKey);
             Assert.assertTrue("Failed to extract " + exifKey, value.isPresent());
             Assert.assertEquals(expected, value.get());
-        } catch (IOException e) {
-            Assert.fail("Unexpected exception");
+        } catch (Exception e) {
             e.printStackTrace();
+            Assert.fail("Unexpected exception");
         }
     }
 
-    private static File getFile() {
-        return new File(ExifExtractorTest.class.getClassLoader().getResource("birdie.jpg").getFile());
+    private static URL getFile() {
+        return ExifExtractorTest.class.getClassLoader().getResource("birdie.jpg");
     }
 }

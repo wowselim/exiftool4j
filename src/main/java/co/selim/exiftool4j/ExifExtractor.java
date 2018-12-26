@@ -7,10 +7,11 @@ import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * A utility that can be used to extract exif data from a {@link File} or a {@link Path}.
+ * A utility that can be used to extract exif data from a {@link URL} that points to a local file.
  * It will create an {@link ExifDocument} ideally containing all values specified in {@link ExifKey}.
  */
 public class ExifExtractor {
@@ -32,28 +33,17 @@ public class ExifExtractor {
     }
 
     /**
-     * Creates an {@link ExifDocument} from a given path.
+     * Creates an {@link ExifDocument} from a given {@link URL}.
      *
-     * @param path the path to extract exif data from
-     * @return a new {@link ExifDocument} that contains the exif data of the file
-     * @throws IOException if reading the file fails
+     * @param url the url that points to the file to extract exif data from
+     * @return a new {@link ExifDocument} that contains the exif data of the url
+     * @throws IOException if reading the from the url fails
      */
-    public ExifDocument extractFromPath(Path path) throws IOException {
-        return extractFromFile(path.toFile());
-    }
-
-    /**
-     * Creates an {@link ExifDocument} from a given file.
-     *
-     * @param file the file to extract exif data from
-     * @return a new {@link ExifDocument} that contains the exif data of the file
-     * @throws IOException if reading the file fails
-     */
-    public ExifDocument extractFromFile(File file) throws IOException {
-        Objects.requireNonNull(file, "Image file may not be null");
+    public ExifDocument extractFromFile(URL url) throws IOException, URISyntaxException {
+        Objects.requireNonNull(url, "Image url may not be null");
 
         final List<String> commandList = new ArrayList<>(EXIFTOOL_COMMANDS);
-        commandList.add(file.getPath().replaceAll("%20", " "));
+        commandList.add(Paths.get(url.toURI()).toString());
         try {
             Process process = processBuilder.command(commandList).start();
             try (InputStream processInputStream = process.getInputStream();
@@ -66,7 +56,7 @@ public class ExifExtractor {
                 return createFromString(stringBuilder.toString());
             }
         } catch (IOException e) {
-            LOGGER.error("Failed to create exif document from {}", file.getPath());
+            LOGGER.error("Failed to create exif document from {}", url);
             throw e;
         }
     }
