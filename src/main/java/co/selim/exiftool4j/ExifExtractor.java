@@ -11,7 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Scanner;
 
 /**
  * A utility that can be used to extract exif data from a {@link File} or a {@link Path}.
@@ -49,7 +53,7 @@ public class ExifExtractor {
         Objects.requireNonNull(file, "Image file may not be null");
 
         final List<String> commandList = new ArrayList<>(EXIFTOOL_COMMANDS);
-        commandList.add(file.getPath());
+        commandList.add(file.getPath().replaceAll("%20", " "));
         try {
             Process process = processBuilder.command(commandList).start();
             try (InputStream processInputStream = process.getInputStream();
