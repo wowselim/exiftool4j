@@ -20,11 +20,7 @@ import java.util.concurrent.CompletionException;
  */
 public class ExifExtractor {
     private static final List<String> EXIFTOOL_COMMANDS = Arrays.asList("exiftool", "-json");
-    private final ProcessBuilder processBuilder;
-
-    public ExifExtractor() {
-        this.processBuilder = new ProcessBuilder();
-    }
+    private ProcessBuilder processBuilder = new ProcessBuilder();
 
     /**
      * Creates an {@link ExifDocument} from a given {@link URI}.
@@ -33,29 +29,43 @@ public class ExifExtractor {
      * @return a future that, on completion, returns an {@link ExifDocument}
      */
     public CompletableFuture<ExifDocument> extractFromFile(URI uri) {
+        return extractFromFile(uri, ForkJoinPool.commonPool());
+    }
+
+    /**
+     * Creates an {@link ExifDocument} from a given {@link URI}.
+     *
+     * @param uri      the {@link URI} pointing to the local file
+     * @param executor the executor to use for async execution
+     * @return a future that, on completion, returns an {@link ExifDocument}
+     */
+    public CompletableFuture<ExifDocument> extractFromFile(URI uri, Executor executor) {
         Objects.requireNonNull(uri, "URI may not be null");
+        Objects.requireNonNull(executor, "Executor may not be null");
+        return CompletableFuture.supplyAsync(() -> getExifDocument(uri), executor);
+    }
 
-        return CompletableFuture.supplyAsync(() -> {
-            final List<String> commandList = new ArrayList<>(EXIFTOOL_COMMANDS);
-            commandList.add(Paths.get(uri).toString());
+    private ExifDocument getExifDocument(URI uri) {
+        final List<String> commandList = new ArrayList<>(EXIFTOOL_COMMANDS);
+        commandList.add(Paths.get(uri).toString());
 
-            try {
-                Process process = processBuilder.command(commandList)
-                        .redirectError(ProcessBuilder.Redirect.INHERIT)
-                        .start();
-                try (InputStream processInputStream = process.getInputStream();
-                     Scanner scanner = new Scanner(processInputStream)) {
-                    StringBuilder stringBuilder = new StringBuilder(8192);
-                    while (scanner.hasNextLine()) {
-                        stringBuilder.append(scanner.nextLine());
-                    }
+        try {
+            Process process = processBuilder.command(commandList)
+                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                    .start();
 
-                    return createFromString(stringBuilder.toString());
+            try (InputStream processInputStream = process.getInputStream();
+                 Scanner scanner = new Scanner(processInputStream)) {
+                StringBuilder stringBuilder = new StringBuilder(8192);
+                while (scanner.hasNextLine()) {
+                    stringBuilder.append(scanner.nextLine());
                 }
-            } catch (IOException e) {
-                throw new CompletionException(e);
+
+                return createFromString(stringBuilder.toString());
             }
-        });
+        } catch (Exception e) {
+            throw new CompletionException(e);
+        }
     }
 
     private ExifDocument createFromString(String json) {
