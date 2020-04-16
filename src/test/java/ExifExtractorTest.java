@@ -1,18 +1,12 @@
-import co.selim.exiftool4j.ExifDocument;
+import co.selim.exiftool4j.ExifData;
 import co.selim.exiftool4j.ExifExtractor;
 import co.selim.exiftool4j.ExifKey;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.net.URI;
-import java.util.Optional;
+import java.io.InputStream;
 
 public class ExifExtractorTest {
-    @Test
-    public void testExtractDescription() {
-        testExtractExifType(ExifKey.DESCRIPTION, "OLYMPUS DIGITAL CAMERA");
-    }
-
     @Test
     public void testExtractDateTime() {
         testExtractExifType(ExifKey.DATE_TIME, "2018:05:28 14:33:09");
@@ -20,12 +14,12 @@ public class ExifExtractorTest {
 
     @Test
     public void testExtractDeviceMake() {
-        testExtractExifType(ExifKey.DEVICE_MAKE, "OLYMPUS IMAGING CORP.");
+        testExtractExifType(ExifKey.MAKE, "OLYMPUS IMAGING CORP.");
     }
 
     @Test
     public void testExtractDeviceModel() {
-        testExtractExifType(ExifKey.DEVICE_MODEL, "E-PL7");
+        testExtractExifType(ExifKey.MODEL, "E-PL7");
     }
 
     @Test
@@ -58,36 +52,14 @@ public class ExifExtractorTest {
         testExtractExifType(ExifKey.FLASH_STATUS, "Auto, Did not fire, Red-eye reduction");
     }
 
-    @Test
-    public void testExtractWidth() {
-        testExtractExifType(ExifKey.WIDTH, "4608");
-    }
-
-    @Test
-    public void testExtractHeight() {
-        testExtractExifType(ExifKey.HEIGHT, "3456");
-    }
-
     private void testExtractExifType(ExifKey exifKey, String expected) {
-        ExifExtractor exifExtractor = new ExifExtractor();
-        try {
-            ExifDocument exifDocument = exifExtractor.extractFromFile(getFileURI()).get();
-            Optional<String> value = exifDocument.getExifData(exifKey);
-            Assert.assertTrue("Failed to extract " + exifKey, value.isPresent());
-            Assert.assertEquals(expected, value.get());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail("Unexpected exception");
-        }
+        ExifData exifData = ExifExtractor.extractExifData(getInputStream());
+        String value = exifData.getFields().get(exifKey);
+        Assert.assertNotNull("Failed to extract " + exifKey, value);
+        Assert.assertEquals(expected, value);
     }
 
-    private static URI getFileURI() {
-        try {
-            return ExifExtractorTest.class.getClassLoader().getResource("birdie.jpg").toURI();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail("Unexpected exception");
-        }
-        return null;
+    private static InputStream getInputStream() {
+        return ExifExtractorTest.class.getClassLoader().getResourceAsStream("birdie.jpg");
     }
 }
