@@ -14,7 +14,7 @@ public class ExifExtractor {
      * @param imageInputStream input stream containing the image
      * @return exif data that the image contains
      */
-    public static ExifData extractExifData(InputStream imageInputStream) {
+    public static ExifData extract(InputStream imageInputStream) {
         return ExifExtractorKt.extractExifData(imageInputStream);
     }
 }

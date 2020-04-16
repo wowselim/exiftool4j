@@ -53,7 +53,7 @@ public class ExifExtractorTest {
     }
 
     private void testExtractExifType(ExifKey exifKey, String expected) {
-        ExifData exifData = ExifExtractor.extractExifData(getInputStream());
+        ExifData exifData = ExifExtractor.extract(getInputStream());
         String value = exifData.getFields().get(exifKey);
         Assert.assertNotNull("Failed to extract " + exifKey, value);
         Assert.assertEquals(expected, value);
