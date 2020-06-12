@@ -13,6 +13,7 @@ First, add exiftool4j to your dependencies using the [jitpack repository](https:
 ```java
 ExifData exifData = ExifExtractor.extract(jpegInputStream);
 String aperture = exifData.get(ExifKey.APERTURE);
+Optional<String> shutterSpeed = exifData.getOptional(ExifKey.SHUTTER_SPEED);
 ```
 
 ### Kotlin
