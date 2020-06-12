@@ -12,11 +12,11 @@ First, add exiftool4j to your dependencies using the [jitpack repository](https:
 ### Java
 ```java
 ExifData exifData = ExifExtractor.extract(jpegInputStream);
-String aperture = exifData.getFields().get(ExifKey.APERTURE);
+String aperture = exifData.get(ExifKey.APERTURE);
 ```
 
 ### Kotlin
 ```kotlin
 val exifData = jpegInputStream.extractExifData()
-val aperture = exifData.fields[ExifKey.APERTURE]
+val aperture = exifData[ExifKey.APERTURE]
 ```

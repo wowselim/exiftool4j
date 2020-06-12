@@ -1,6 +1,6 @@
 package co.selim.exiftool4j
 
-enum class ExifKey(internal val names: List<String>, internal val blacklist: List<String> = emptyList()) {
+enum class ExifKey(internal val names: List<String>, internal val exclude: List<String> = emptyList()) {
     DATE_TIME(listOf("Date/Time Original", "Create Date", "Time Stamp")),
     MAKE(listOf("Make")),
     MODEL(listOf("Model", "Camera Model Name")),
@@ -10,6 +10,6 @@ enum class ExifKey(internal val names: List<String>, internal val blacklist: Lis
     ISO(listOf("ISO", "Program ISO")),
     FLASH_STATUS(listOf("Flash")),
 
-    // eclude equivalent focal lengths
-    FOCAL_LENGTH(listOf("Focal Length"), blacklist = listOf("equivalent"))
+    // exclude equivalent focal lengths
+    FOCAL_LENGTH(listOf("Focal Length"), exclude = listOf("equivalent"))
 }

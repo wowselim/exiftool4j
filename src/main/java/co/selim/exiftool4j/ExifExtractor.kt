@@ -20,7 +20,7 @@ fun InputStream.extractExifData(): ExifData {
     val fields = extractKeyValuePairs(output)
             .mapNotNull { (key, value) ->
                 getExifKey(key)?.let { exifKey ->
-                    if (exifKey.blacklist.none { value.contains(it, true) })
+                    if (exifKey.exclude.none { value.contains(it, true) })
                         exifKey to value
                     else
                         null
