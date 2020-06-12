@@ -1,2 +1,0 @@
-co/selim/exiftool4j/ExifExtractor.java
- co.selim.exiftool4j.ExifExtractor

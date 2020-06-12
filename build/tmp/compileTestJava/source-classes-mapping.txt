@@ -1,2 +1,0 @@
-ExifExtractorTest.java
- ExifExtractorTest
